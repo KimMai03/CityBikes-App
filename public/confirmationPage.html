@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CityBikes - Request Submitted</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="homePage.html" class="navbar-logo">
+            <span class="logo-text">CityBikes</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="homePage.html">Home</a></li>
+            <li><a href="aboutUsPage.html">About Us</a></li>
+            <li><a href="locationPage.html">Find Bikes</a></li>
+            <li><a href="contactPage.html">Contact</a></li>
+            <li><a href="locationPage.html" class="navbar-cta">Search Now</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main class="page-content" style="display:flex; align-items:center; justify-content:center; padding: 40px 24px;">
+
+    <div class="confirm-box">
+        <h2>Request Submitted</h2>
+        <p>Thank you for reaching out. We have received your help request and will get back to you within <strong>24&ndash;48 business hours</strong>.</p>
+
+        <div class="alert alert-success" style="text-align:left; margin-bottom:24px;">
+            <strong>What happens next?</strong><br />
+            Our team will review your message and reply to the email address you provided. Please check your inbox for our response.
+        </div>
+
+        <div id="submitterInfo" style="margin-bottom:20px; display:none;">
+            <p style="font-size:0.88rem; color:var(--text-muted);">Submitted by: <strong id="displayName"></strong></p>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <a href="homePage.html" class="btn btn-primary">Back to Home</a>
+            <a href="locationPage.html" class="btn btn-outline">Find Bikes</a>
+        </div>
+    </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <ul class="footer-links">
+        <li><a href="homePage.html">Home</a></li>
+        <li><a href="aboutUsPage.html">About Us</a></li>
+        <li><a href="locationPage.html">Find Bikes</a></li>
+        <li><a href="contactPage.html">Contact</a></li>
+    </ul>
+    <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBik.es API</a></p>
+</footer>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const firstName = params.get('firstName');
+    const lastName  = params.get('lastName');
+    if (firstName || lastName) {
+        const fullName = [firstName, lastName].filter(Boolean).join(' ');
+        document.getElementById('displayName').textContent = fullName;
+        document.getElementById('submitterInfo').style.display = 'block';
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CityBikes - Contact</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="homePage.html" class="navbar-logo">
+            <span class="logo-text">CityBikes</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="homePage.html">Home</a></li>
+            <li><a href="aboutUsPage.html">About Us</a></li>
+            <li><a href="locationPage.html">Find Bikes</a></li>
+            <li><a href="contactPage.html" class="active">Contact</a></li>
+            <li><a href="locationPage.html" class="navbar-cta">Search Now</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main class="page-content">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Contact Us</h1>
+        <p>Have a question or need help? Fill out the form below and we will get back to you.</p>
+    </div>
+
+    <section class="section">
+
+        <!-- CONTACT INFO -->
+        <div class="contact-info-grid">
+            <div class="contact-info-item">
+                <h4>Email</h4>
+                <p>support@citybikes.app</p>
+            </div>
+            <div class="contact-info-item">
+                <h4>Phone</h4>
+                <p>+1 (800) 555-BIKE</p>
+                <p>Mon&ndash;Fri, 9am&ndash;5pm EST</p>
+            </div>
+            <div class="contact-info-item">
+                <h4>Location</h4>
+                <p>University of Maryland</p>
+                <p>College Park, MD 20742</p>
+            </div>
+            <div class="contact-info-item">
+                <h4>Response Time</h4>
+                <p>Within 24&ndash;48 hours</p>
+                <p>Business days only</p>
+            </div>
+        </div>
+
+        <!-- HELP FORM + FAQ -->
+        <div class="two-col" style="align-items:start; gap:40px;">
+            <div>
+                <h2 class="section-title">Help Request Form</h2>
+                <p class="section-sub">Fill out the fields below and submit. You will be taken to a confirmation page once your request is sent.</p>
+
+                <div class="form-card">
+                    <form id="helpForm" action="confirmationPage.html" method="get" onsubmit="return validateForm()">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name <span style="color:var(--danger)">*</span></label>
+                                <input type="text" id="firstName" name="firstName" placeholder="Jane" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name <span style="color:var(--danger)">*</span></label>
+                                <input type="text" id="lastName" name="lastName" placeholder="Smith" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address <span style="color:var(--danger)">*</span></label>
+                            <input type="email" id="email" name="email" placeholder="jane@example.com" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject <span style="color:var(--danger)">*</span></label>
+                            <select id="subject" name="subject" required>
+                                <option value="">Select a topic...</option>
+                                <option value="search">Trouble searching for a location</option>
+                                <option value="map">Map not loading</option>
+                                <option value="data">Incorrect or missing station data</option>
+                                <option value="other">Other question</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message <span style="color:var(--danger)">*</span></label>
+                            <textarea id="message" name="message" placeholder="Describe your issue or question..." required></textarea>
+                        </div>
+
+                        <div id="formError" class="alert alert-info" style="display:none;"></div>
+
+                        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div>
+                <h2 class="section-title">Common Questions</h2>
+                <p class="section-sub">Quick answers to frequent topics.</p>
+
+                <div style="display:flex; flex-direction:column; gap:14px;">
+
+                    <div class="card" style="padding:16px 18px;">
+                        <h4 style="margin-bottom:5px; font-size:0.92rem;">Why does my city not appear in the search?</h4>
+                        <p style="font-size:0.87rem;">Not every city has a bike-sharing program. Coverage depends on whether a network is registered with the CityBik.es API. Try searching by country instead.</p>
+                    </div>
+
+                    <div class="card" style="padding:16px 18px;">
+                        <h4 style="margin-bottom:5px; font-size:0.92rem;">How often is station data updated?</h4>
+                        <p style="font-size:0.87rem;">Data is fetched live from the CityBik.es API each time you load the results page. Reload the page for the most current availability.</p>
+                    </div>
+
+                    <div class="card" style="padding:16px 18px;">
+                        <h4 style="margin-bottom:5px; font-size:0.92rem;">What do the station colors on the map mean?</h4>
+                        <p style="font-size:0.87rem;"><span style="color:var(--accent); font-weight:700;">Green</span> = bikes available &nbsp; <span style="color:var(--warning); font-weight:700;">Amber</span> = limited (3 or fewer) &nbsp; <span style="color:var(--danger); font-weight:700;">Red</span> = no bikes.</p>
+                    </div>
+
+                    <div class="card" style="padding:16px 18px;">
+                        <h4 style="margin-bottom:5px; font-size:0.92rem;">Is CityBikes affiliated with any bike-sharing company?</h4>
+                        <p style="font-size:0.87rem;">No. CityBikes is an independent academic project that reads publicly available data from the CityBik.es open API. We do not operate any bike stations.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <ul class="footer-links">
+        <li><a href="homePage.html">Home</a></li>
+        <li><a href="aboutUsPage.html">About Us</a></li>
+        <li><a href="locationPage.html">Find Bikes</a></li>
+        <li><a href="contactPage.html">Contact</a></li>
+    </ul>
+    <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBik.es API</a></p>
+</footer>
+
+<script>
+function validateForm() {
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const subject   = document.getElementById('subject').value;
+    const message   = document.getElementById('message').value.trim();
+    const errEl     = document.getElementById('formError');
+
+    if (!firstName || !lastName || !email || !subject || !message) {
+        errEl.textContent = 'Please fill in all required fields before submitting.';
+        errEl.style.display = 'block';
+        return false;
+    }
+
+    errEl.style.display = 'none';
+    return true;
+}
+</script>
+</body>
+</html>
