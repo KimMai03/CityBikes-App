@@ -1,408 +1,234 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CityBikes - Station Results</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        #stationMap { height: 440px; }
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CityBikes - Station Results</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="resultPage.js" defer></script>
+        <style>
+            #stationMap { height: 440px; }
 
-        .station-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 14px 16px;
-            transition: border-color 0.15s;
-        }
+            .station-card {
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 14px 16px;
+                transition: border-color 0.15s;
+            }
 
-        .station-card:hover {
-            border-color: var(--primary);
-        }
+            .station-card:hover {
+                border-color: var(--primary);
+            }
 
-        .station-card h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
+            .station-card h4 {
+                font-size: 0.9rem;
+                font-weight: 600;
+                margin-bottom: 6px;
+            }
 
-        .station-stats {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+            .station-stats {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
 
-        .stat-pill {
-            display: inline-block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: var(--radius);
-        }
+            .stat-pill {
+                display: inline-block;
+                font-size: 0.8rem;
+                font-weight: 600;
+                padding: 2px 8px;
+                border-radius: var(--radius);
+            }
 
-        .pill-bikes {
-            background: #D1FAE5;
-            color: #065F46;
-        }
+            .pill-bikes {
+                background: #D1FAE5;
+                color: #065F46;
+            }
 
-        .pill-docks {
-            background: #DBEAFE;
-            color: #1E40AF;
-        }
+            .pill-docks {
+                background: #DBEAFE;
+                color: #1E40AF;
+            }
 
-        .station-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 440px;
-            overflow-y: auto;
-        }
+            .station-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                max-height: 440px;
+                overflow-y: auto;
+            }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 0.88rem;
-            text-decoration: none;
-            margin-bottom: 18px;
-        }
+            .back-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                color: var(--primary);
+                font-weight: 600;
+                font-size: 0.88rem;
+                text-decoration: none;
+                margin-bottom: 18px;
+            }
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
+            .back-link:hover {
+                text-decoration: underline;
+            }
 
-        .spinner {
-            display: inline-block;
-            width: 22px;
-            height: 22px;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
+            .spinner {
+                display: inline-block;
+                width: 22px;
+                height: 22px;
+                border: 3px solid var(--border);
+                border-top-color: var(--primary);
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+            }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+            @keyframes spin { to { transform: rotate(360deg); } }
 
-        .legend {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            font-size: 0.8rem;
-            margin-top: 7px;
-        }
+            .legend {
+                display: flex;
+                gap: 14px;
+                flex-wrap: wrap;
+                font-size: 0.8rem;
+                margin-top: 7px;
+            }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
 
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
+            .legend-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
 
-        .filter-bar {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
+            .filter-bar {
+                display: flex;
+                gap: 6px;
+                flex-wrap: wrap;
+                margin-bottom: 10px;
+            }
 
-        .filter-btn {
-            padding: 4px 12px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background: var(--white);
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-            font-family: inherit;
-        }
+            .filter-btn {
+                padding: 4px 12px;
+                border-radius: var(--radius);
+                border: 1px solid var(--border);
+                background: var(--white);
+                font-size: 0.82rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.15s, border-color 0.15s;
+                font-family: inherit;
+            }
 
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-    </style>
-</head>
-<body>
+            .filter-btn.active, .filter-btn:hover {
+                background: var(--primary-light);
+                border-color: var(--primary);
+                color: var(--primary);
+            }
+        </style>
+    </head>
+    <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="navbar-inner">
-        <a href="homePage.html" class="navbar-logo">
-            <span class="logo-text">CityBikes</span>
-        </a>
-        <ul class="navbar-links">
-            <li><a href="homePage.html">Home</a></li>
-            <li><a href="aboutUsPage.html">About Us</a></li>
-            <li><a href="locationPage.html">Find Bikes</a></li>
-            <li><a href="contactPage.html">Contact</a></li>
-            <li><a href="locationPage.html" class="navbar-cta">Search Now</a></li>
-        </ul>
-    </div>
-</nav>
-
-<main class="page-content">
-
-    <!-- PAGE HEADER -->
-    <div class="page-header" id="pageHeader">
-        <h1 id="networkTitle">Loading Station Data...</h1>
-        <p id="networkSubtitle">Fetching real-time availability</p>
-    </div>
-
-    <section class="section" style="padding-top:28px;">
-
-        <a href="locationPage.html" class="back-link">&#8592; Back to Search</a>
-
-        <!-- LOADING STATE -->
-        <div id="loadingState" style="text-align:center; padding:50px 0;">
-            <div class="spinner"></div>
-            <p style="color:var(--text-muted); margin-top:14px; font-size:0.92rem;">Loading station data...</p>
-        </div>
-
-        <!-- ERROR STATE -->
-        <div id="errorState" style="display:none;">
-            <div class="alert alert-info">
-                <strong>Could not load station data.</strong> The network may be temporarily unavailable or the ID is invalid. <a href="locationPage.html">Try another network</a>.
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="navbar-inner">
+                <a href="homePage.html" class="navbar-logo">
+                    <span class="logo-text">CityBikes</span>
+                </a>
+                <ul class="navbar-links">
+                    <li><a href="homePage.html">Home</a></li>
+                    <li><a href="aboutUsPage.html">About Us</a></li>
+                    <li><a href="locationPage.html">Find Bikes</a></li>
+                    <li><a href="contactPage.html">Contact</a></li>
+                    <li><a href="locationPage.html" class="navbar-cta">Search Now</a></li>
+                </ul>
             </div>
-        </div>
+        </nav>
 
-        <!-- RESULTS -->
-        <div id="resultsContent" style="display:none;">
+        <main class="page-content">
 
-            <!-- SUMMARY ROW -->
-            <div id="summaryRow" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;"></div>
+            <!-- PAGE HEADER -->
+            <div class="page-header" id="pageHeader">
+                <h1 id="networkTitle">Loading Station Data...</h1>
+                <p id="networkSubtitle">Fetching real-time availability</p>
+            </div>
 
-            <div class="two-col" style="gap:24px; align-items:start;">
+            <section class="section" style="padding-top:28px;">
 
-                <!-- MAP -->
-                <div>
-                    <h2 style="font-size:1rem; font-weight:700; margin-bottom:8px;">Station Map</h2>
-                    <div class="map-container">
-                        <div id="stationMap"></div>
-                    </div>
-                    <div class="legend">
-                        <div class="legend-item"><div class="legend-dot" style="background:#22C55E;"></div> Available</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#F59E0B;"></div> Limited (3 or fewer)</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#EF4444;"></div> No bikes</div>
+                <a href="locationPage.html" class="back-link">&#8592; Back to Search</a>
+
+                <!-- LOADING STATE -->
+                <div id="loadingState" style="text-align:center; padding:50px 0;">
+                    <div class="spinner"></div>
+                    <p style="color:var(--text-muted); margin-top:14px; font-size:0.92rem;">Loading station data...</p>
+                </div>
+
+                <!-- ERROR STATE -->
+                <div id="errorState" style="display:none;">
+                    <div class="alert alert-info">
+                        <strong>Could not load station data.</strong> The network may be temporarily unavailable or the ID is invalid. <a href="locationPage.html">Try another network</a>.
                     </div>
                 </div>
 
-                <!-- STATION LIST -->
-                <div>
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-                        <h2 style="font-size:1rem; font-weight:700;">Stations <span id="stationCount" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"></span></h2>
-                    </div>
+                <!-- RESULTS -->
+                <div id="resultsContent" style="display:none;">
 
-                    <div class="filter-bar">
-                        <button class="filter-btn active" onclick="filterStations('all', this)">All</button>
-                        <button class="filter-btn" onclick="filterStations('available', this)">Available</button>
-                        <button class="filter-btn" onclick="filterStations('limited', this)">Limited</button>
-                        <button class="filter-btn" onclick="filterStations('empty', this)">No Bikes</button>
-                    </div>
+                    <!-- SUMMARY ROW -->
+                    <div id="summaryRow" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;"></div>
 
-                    <div id="stationList" class="station-list"></div>
-                </div>
+                    <div class="two-col" style="gap:24px; align-items:start;">
 
-            </div>
-        </div>
+                        <!-- MAP -->
+                        <div>
+                            <h2 style="font-size:1rem; font-weight:700; margin-bottom:8px;">Station Map</h2>
+                            <div class="map-container">
+                                <div id="stationMap"></div>
+                            </div>
+                            <div class="legend">
+                                <div class="legend-item"><div class="legend-dot" style="background:#22C55E;"></div> Available</div>
+                                <div class="legend-item"><div class="legend-dot" style="background:#F59E0B;"></div> Limited (3 or fewer)</div>
+                                <div class="legend-item"><div class="legend-dot" style="background:#EF4444;"></div> No bikes</div>
+                            </div>
+                        </div>
 
-    </section>
-</main>
+                        <!-- STATION LIST -->
+                        <div>
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                                <h2 style="font-size:1rem; font-weight:700;">Stations <span id="stationCount" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"></span></h2>
+                            </div>
 
-<!-- FOOTER -->
-<footer class="footer">
-    <ul class="footer-links">
-        <li><a href="homePage.html">Home</a></li>
-        <li><a href="aboutUsPage.html">About Us</a></li>
-        <li><a href="locationPage.html">Find Bikes</a></li>
-        <li><a href="contactPage.html">Contact</a></li>
-    </ul>
-    <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBik.es API</a></p>
-</footer>
+                            <div class="filter-bar">
+                                <button class="filter-btn active" onclick="filterStations('all', this)">All</button>
+                                <button class="filter-btn" onclick="filterStations('available', this)">Available</button>
+                                <button class="filter-btn" onclick="filterStations('limited', this)">Limited</button>
+                                <button class="filter-btn" onclick="filterStations('empty', this)">No Bikes</button>
+                            </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-    const params      = new URLSearchParams(window.location.search);
-    const networkId   = params.get('networkId');
-    const networkName = params.get('networkName') || 'Bike Network';
-    const city        = params.get('city') || '';
-    const country     = params.get('country') || '';
+                            <div id="stationList" class="station-list"></div>
+                        </div>
 
-    document.getElementById('networkTitle').textContent = decodeURIComponent(networkName);
-    document.getElementById('networkSubtitle').textContent =
-        [decodeURIComponent(city), decodeURIComponent(country)].filter(Boolean).join(', ') + ' — Live Station Availability';
-
-    let stationMap = null;
-    let allStations = [];
-
-    async function loadStations() {
-        if (!networkId) { showError(); return; }
-
-        try {
-            const res = await fetch(`https://api.citybik.es/v2/networks/${networkId}`);
-            if (!res.ok) throw new Error('Bad response');
-            const json = await res.json();
-            allStations = json.network?.stations || [];
-
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('resultsContent').style.display = 'block';
-
-            renderSummary(allStations);
-            initMap(allStations);
-            renderStations(allStations);
-        } catch (e) {
-            showError();
-        }
-    }
-
-    function showError() {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('errorState').style.display = 'block';
-    }
-
-    function renderSummary(stations) {
-        const total     = stations.length;
-        const withBikes = stations.filter(s => (s.free_bikes || 0) > 0).length;
-        const empty     = stations.filter(s => (s.free_bikes || 0) === 0).length;
-        const full      = stations.filter(s => (s.empty_slots || 0) === 0).length;
-
-        document.getElementById('summaryRow').innerHTML = `
-            <div class="card" style="padding:12px 18px; text-align:center; min-width:110px;">
-                <div style="font-size:1.4rem; font-weight:800; color:var(--primary);">${total}</div>
-                <div style="font-size:0.78rem; color:var(--text-muted);">Total Stations</div>
-            </div>
-            <div class="card" style="padding:12px 18px; text-align:center; min-width:110px;">
-                <div style="font-size:1.4rem; font-weight:800; color:#16A34A;">${withBikes}</div>
-                <div style="font-size:0.78rem; color:var(--text-muted);">Have Bikes</div>
-            </div>
-            <div class="card" style="padding:12px 18px; text-align:center; min-width:110px;">
-                <div style="font-size:1.4rem; font-weight:800; color:#EF4444;">${empty}</div>
-                <div style="font-size:0.78rem; color:var(--text-muted);">No Bikes</div>
-            </div>
-            <div class="card" style="padding:12px 18px; text-align:center; min-width:110px;">
-                <div style="font-size:1.4rem; font-weight:800; color:#D97706;">${full}</div>
-                <div style="font-size:0.78rem; color:var(--text-muted);">Full Docks</div>
-            </div>
-        `;
-    }
-
-    function stationStatus(s) {
-        const bikes = s.free_bikes || 0;
-        if (bikes === 0) return 'empty';
-        if (bikes <= 3) return 'limited';
-        return 'available';
-    }
-
-    function markerColor(s) {
-        const status = stationStatus(s);
-        if (status === 'available') return '#22C55E';
-        if (status === 'limited')   return '#F59E0B';
-        return '#EF4444';
-    }
-
-    function badgeHTML(s) {
-        const status = stationStatus(s);
-        const cls    = status === 'available' ? 'badge-available' : status === 'limited' ? 'badge-limited' : 'badge-full';
-        const label  = status === 'available' ? 'Available' : status === 'limited' ? 'Limited' : 'No Bikes';
-        return `<span class="station-badge ${cls}">${label}</span>`;
-    }
-
-    function initMap(stations) {
-        if (stations.length === 0) return;
-
-        const firstValid = stations.find(s => s.latitude && s.longitude);
-        const center = firstValid ? [firstValid.latitude, firstValid.longitude] : [20, 0];
-
-        stationMap = L.map('stationMap').setView(center, 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors',
-            maxZoom: 19
-        }).addTo(stationMap);
-
-        stations.forEach(s => {
-            if (!s.latitude || !s.longitude) return;
-            const bikes = s.free_bikes || 0;
-            const docks = s.empty_slots || 0;
-            const color = markerColor(s);
-
-            L.circleMarker([s.latitude, s.longitude], {
-                radius: 8,
-                fillColor: color,
-                color: '#ffffff',
-                weight: 2,
-                fillOpacity: 0.9
-            }).addTo(stationMap).bindPopup(
-                `<strong>${s.name || 'Station'}</strong><br/>` +
-                `Bikes available: <strong>${bikes}</strong><br/>` +
-                `Docks free: <strong>${docks}</strong>`
-            );
-        });
-
-        const coords = stations.filter(s => s.latitude && s.longitude).map(s => [s.latitude, s.longitude]);
-        if (coords.length > 1) {
-            stationMap.fitBounds(L.latLngBounds(coords).pad(0.1));
-        }
-    }
-
-    function renderStations(stations) {
-        const listEl  = document.getElementById('stationList');
-        const countEl = document.getElementById('stationCount');
-        listEl.innerHTML = '';
-        countEl.textContent = `(${stations.length})`;
-
-        if (stations.length === 0) {
-            listEl.innerHTML = '<p style="color:var(--text-muted); font-size:0.88rem;">No stations match this filter.</p>';
-            return;
-        }
-
-        stations.forEach(s => {
-            const bikes     = s.free_bikes || 0;
-            const docks     = s.empty_slots || 0;
-            const bikePct   = Math.min(100, bikes * 10);
-
-            const card = document.createElement('div');
-            card.className = 'station-card';
-            card.setAttribute('data-status', stationStatus(s));
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
-                    <h4>${s.name || 'Unnamed Station'}</h4>
-                    ${badgeHTML(s)}
-                </div>
-                <div class="station-stats">
-                    <span class="stat-pill pill-bikes">${bikes} bikes</span>
-                    <span class="stat-pill pill-docks">${docks} docks free</span>
-                </div>
-                <div style="margin-top:8px;">
-                    <div class="stat-bar">
-                        <div class="stat-bar-fill ${bikes <= 3 ? (bikes === 0 ? 'danger' : 'warn') : ''}" style="width:${bikePct}%"></div>
                     </div>
                 </div>
-            `;
-            listEl.appendChild(card);
-        });
-    }
 
-    function filterStations(type, btn) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+            </section>
+        </main>
 
-        const filtered = type === 'all'
-            ? allStations
-            : allStations.filter(s => stationStatus(s) === type);
-        renderStations(filtered);
-    }
-
-    loadStations();
-</script>
-</body>
+        <!-- FOOTER -->
+        <footer class="footer">
+            <ul class="footer-links">
+                <li><a href="homePage.html">Home</a></li>
+                <li><a href="aboutUsPage.html">About Us</a></li>
+                <li><a href="locationPage.html">Find Bikes</a></li>
+                <li><a href="contactPage.html">Contact</a></li>
+            </ul>
+            <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBikes API</a></p>
+        </footer>
+    </body>
 </html>

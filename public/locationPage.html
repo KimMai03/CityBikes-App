@@ -1,309 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CityBikes - Location Search</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        #worldMap { height: 460px; }
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CityBikes - Location Search</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="locationPage.js" defer></script>
+        <style>
+            #worldMap { height: 460px; }
 
-        .network-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
-        }
+            .network-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-top: 12px;
+            }
 
-        .network-item {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            cursor: pointer;
-            transition: border-color 0.15s;
-            text-decoration: none;
-            color: inherit;
-        }
+            .network-item {
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 12px 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                cursor: pointer;
+                transition: border-color 0.15s;
+                text-decoration: none;
+                color: inherit;
+            }
 
-        .network-item:hover {
-            border-color: var(--primary);
-            text-decoration: none;
-        }
+            .network-item:hover {
+                border-color: var(--primary);
+                text-decoration: none;
+            }
 
-        .network-item-left h4 {
-            font-size: 0.92rem;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
+            .network-item-left h4 {
+                font-size: 0.92rem;
+                font-weight: 600;
+                margin-bottom: 2px;
+            }
 
-        .network-item-left p {
-            font-size: 0.83rem;
-            color: var(--text-muted);
-        }
+            .network-item-left p {
+                font-size: 0.83rem;
+                color: var(--text-muted);
+            }
 
-        .network-item-arrow {
-            color: var(--primary);
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
+            .network-item-arrow {
+                color: var(--primary);
+                font-size: 1rem;
+                flex-shrink: 0;
+            }
 
-        .search-section {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            padding: 28px 24px;
-        }
+            .search-section {
+                background: var(--white);
+                border-bottom: 1px solid var(--border);
+                padding: 28px 24px;
+            }
 
-        .search-section-inner {
-            max-width: 720px;
-            margin: 0 auto;
-            text-align: center;
-        }
+            .search-section-inner {
+                max-width: 720px;
+                margin: 0 auto;
+                text-align: center;
+            }
 
-        #searchStatus {
-            font-size: 0.88rem;
-            color: var(--text-muted);
-            margin-top: 10px;
-            min-height: 18px;
-        }
+            #searchStatus {
+                font-size: 0.88rem;
+                color: var(--text-muted);
+                margin-top: 10px;
+                min-height: 18px;
+            }
 
-        .results-panel {
-            max-height: 400px;
-            overflow-y: auto;
-        }
+            .results-panel {
+                max-height: 400px;
+                overflow-y: auto;
+            }
 
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            vertical-align: middle;
-            margin-right: 5px;
-        }
+            .spinner {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 2px solid var(--border);
+                border-top-color: var(--primary);
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+                vertical-align: middle;
+                margin-right: 5px;
+            }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
-</head>
-<body>
+            @keyframes spin { to { transform: rotate(360deg); } }
+        </style>
+    </head>
+    <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="navbar-inner">
-        <a href="homePage.html" class="navbar-logo">
-            <span class="logo-text">CityBikes</span>
-        </a>
-        <ul class="navbar-links">
-            <li><a href="homePage.html">Home</a></li>
-            <li><a href="aboutUsPage.html">About Us</a></li>
-            <li><a href="locationPage.html" class="active">Find Bikes</a></li>
-            <li><a href="contactPage.html">Contact</a></li>
-            <li><a href="locationPage.html" class="navbar-cta">Search Now</a></li>
-        </ul>
-    </div>
-</nav>
-
-<main class="page-content">
-
-    <!-- SEARCH BAR -->
-    <div class="search-section">
-        <div class="search-section-inner">
-            <h1 style="font-size:1.5rem; font-weight:700; margin-bottom:6px;">Find Bike Networks</h1>
-            <p style="color:var(--text-muted); font-size:0.92rem; margin-bottom:18px;">Enter a city or country to search available bike-sharing networks worldwide.</p>
-
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="e.g. Washington D.C., France, London..." />
-                <button id="searchBtn" onclick="searchNetworks()">Search</button>
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="navbar-inner">
+                <a href="homePage.html" class="navbar-logo">
+                    <span class="logo-text">CityBikes</span>
+                </a>
+                <ul class="navbar-links">
+                    <li><a href="homePage.html">Home</a></li>
+                    <li><a href="aboutUsPage.html">About Us</a></li>
+                    <li><a href="locationPage.html" class="active">Find Bikes</a></li>
+                    <li><a href="contactPage.html">Contact</a></li>
+                    <li><a href="locationPage.html" class="navbar-cta">Search Now</a></li>
+                </ul>
             </div>
-            <p id="searchStatus"></p>
-        </div>
-    </div>
+        </nav>
 
-    <!-- MAP + RESULTS -->
-    <section class="section" style="padding-top:32px;">
-        <div class="two-col" style="gap:24px; align-items:start;">
+        <main class="page-content">
 
-            <!-- MAP -->
-            <div>
-                <h2 style="font-size:1rem; font-weight:700; margin-bottom:10px;">
-                    Network Map
-                    <span id="mapSubtitle" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"> &mdash; All worldwide networks</span>
-                </h2>
-                <div class="map-container">
-                    <div id="worldMap"></div>
-                </div>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:6px;">Blue markers indicate bike networks. Click a marker for details.</p>
-            </div>
+            <!-- SEARCH BAR -->
+            <div class="search-section">
+                <div class="search-section-inner">
+                    <h1 style="font-size:1.5rem; font-weight:700; margin-bottom:6px;">Find Bike Networks</h1>
+                    <p style="color:var(--text-muted); font-size:0.92rem; margin-bottom:18px;">Enter a city or country to search available bike-sharing networks worldwide.</p>
 
-            <!-- RESULTS LIST -->
-            <div>
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                    <h2 style="font-size:1rem; font-weight:700;">Networks Found <span id="resultCount" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"></span></h2>
-                    <button id="clearBtn" onclick="clearSearch()" style="display:none; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.83rem; text-decoration:underline;">Clear</button>
-                </div>
-
-                <div id="resultsPanel" class="results-panel">
-                    <p style="color:var(--text-muted); font-size:0.9rem;">Search for a city or country above to see matching bike networks here.</p>
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="e.g. Washington D.C., France, London..." />
+                        <button id="searchBtn" onclick="searchNetworks()">Search</button>
+                    </div>
+                    <p id="searchStatus"></p>
                 </div>
             </div>
 
-        </div>
-    </section>
+            <!-- MAP + RESULTS -->
+            <section class="section" style="padding-top:32px;">
+                <div class="two-col" style="gap:24px; align-items:start;">
 
-</main>
+                    <!-- MAP -->
+                    <div>
+                        <h2 style="font-size:1rem; font-weight:700; margin-bottom:10px;">
+                            Network Map
+                            <span id="mapSubtitle" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"> &mdash; All worldwide networks</span>
+                        </h2>
+                        <div class="map-container">
+                            <div id="worldMap"></div>
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:6px;">Blue markers indicate bike networks. Click a marker for details.</p>
+                    </div>
 
-<!-- FOOTER -->
-<footer class="footer">
-    <ul class="footer-links">
-        <li><a href="homePage.html">Home</a></li>
-        <li><a href="aboutUsPage.html">About Us</a></li>
-        <li><a href="locationPage.html">Find Bikes</a></li>
-        <li><a href="contactPage.html">Contact</a></li>
-    </ul>
-    <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBik.es API</a></p>
-</footer>
+                    <!-- RESULTS LIST -->
+                    <div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                            <h2 style="font-size:1rem; font-weight:700;">Networks Found <span id="resultCount" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"></span></h2>
+                            <button id="clearBtn" onclick="clearSearch()" style="display:none; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.83rem; text-decoration:underline;">Clear</button>
+                        </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-    const map = L.map('worldMap').setView([20, 0], 2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 18
-    }).addTo(map);
+                        <div id="resultsPanel" class="results-panel">
+                            <p style="color:var(--text-muted); font-size:0.9rem;">Search for a city or country above to see matching bike networks here.</p>
+                        </div>
+                    </div>
 
-    let allNetworks = [];
-    let markers = [];
-
-    async function loadAllNetworks() {
-        try {
-            const res = await fetch('https://api.citybik.es/v2/networks');
-            const json = await res.json();
-            allNetworks = json.networks || [];
-            plotMarkers(allNetworks, false);
-        } catch (e) {
-            document.getElementById('searchStatus').textContent = 'Could not load network data. Check your connection.';
-        }
-    }
-
-    function plotMarkers(networks, fitBounds) {
-        markers.forEach(m => map.removeLayer(m));
-        markers = [];
-
-        networks.forEach(n => {
-            if (!n.location) return;
-            const { latitude: lat, longitude: lng, city, country } = n.location;
-            const marker = L.circleMarker([lat, lng], {
-                radius: 6,
-                fillColor: '#0057B8',
-                color: '#ffffff',
-                weight: 1.5,
-                fillOpacity: 0.85
-            }).addTo(map);
-
-            marker.bindPopup(
-                `<strong>${n.name}</strong><br/>${city}, ${country}<br/>` +
-                `<a href="resultPage.html?networkId=${n.id}&networkName=${encodeURIComponent(n.name)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}" ` +
-                `style="color:#0057B8; font-weight:600;">View Stations</a>`
-            );
-            markers.push(marker);
-        });
-
-        if (fitBounds && markers.length > 0) {
-            const group = L.featureGroup(markers);
-            map.fitBounds(group.getBounds().pad(0.2));
-        }
-    }
-
-    function searchNetworks() {
-        const query = document.getElementById('searchInput').value.trim().toLowerCase();
-        const statusEl = document.getElementById('searchStatus');
-        const resultsEl = document.getElementById('resultsPanel');
-        const countEl = document.getElementById('resultCount');
-        const clearBtn = document.getElementById('clearBtn');
-        const mapSubtitle = document.getElementById('mapSubtitle');
-
-        if (!query) {
-            statusEl.textContent = 'Please enter a city or country to search.';
-            return;
-        }
-
-        statusEl.innerHTML = '<span class="spinner"></span>Searching...';
-
-        const filtered = allNetworks.filter(n => {
-            const city = (n.location?.city || '').toLowerCase();
-            const country = (n.location?.country || '').toLowerCase();
-            const name = (n.name || '').toLowerCase();
-            return city.includes(query) || country.includes(query) || name.includes(query);
-        });
-
-        if (filtered.length === 0) {
-            statusEl.textContent = `No networks found for "${query}". Try a different city or country.`;
-            resultsEl.innerHTML = `<p style="color:var(--text-muted); font-size:0.9rem;">No results. Try searching a broader term like a country name.</p>`;
-            countEl.textContent = '';
-            clearBtn.style.display = 'inline';
-            return;
-        }
-
-        statusEl.textContent = '';
-        countEl.textContent = `(${filtered.length} found)`;
-        mapSubtitle.textContent = ` — Results for "${query}"`;
-        clearBtn.style.display = 'inline';
-
-        plotMarkers(filtered, true);
-        renderResultsList(filtered);
-    }
-
-    function renderResultsList(networks) {
-        const resultsEl = document.getElementById('resultsPanel');
-        resultsEl.innerHTML = '';
-
-        const list = document.createElement('div');
-        list.className = 'network-list';
-
-        networks.forEach(n => {
-            const city = n.location?.city || 'Unknown City';
-            const country = n.location?.country || '??';
-            const company = (n.company || []).join(', ') || 'Unknown Operator';
-
-            const item = document.createElement('a');
-            item.className = 'network-item';
-            item.href = `resultPage.html?networkId=${n.id}&networkName=${encodeURIComponent(n.name)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`;
-            item.innerHTML = `
-                <div class="network-item-left">
-                    <h4>${n.name}</h4>
-                    <p>${city}, ${country} &bull; ${company}</p>
                 </div>
-                <span class="network-item-arrow">&#8594;</span>
-            `;
-            list.appendChild(item);
-        });
+            </section>
 
-        resultsEl.appendChild(list);
-    }
+        </main>
 
-    function clearSearch() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('searchStatus').textContent = '';
-        document.getElementById('resultCount').textContent = '';
-        document.getElementById('mapSubtitle').textContent = ' — All worldwide networks';
-        document.getElementById('clearBtn').style.display = 'none';
-        document.getElementById('resultsPanel').innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Search for a city or country above to see matching bike networks here.</p>';
-        plotMarkers(allNetworks, false);
-        map.setView([20, 0], 2);
-    }
-
-    document.getElementById('searchInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') searchNetworks();
-    });
-
-    loadAllNetworks();
-</script>
-</body>
+        <!-- FOOTER -->
+        <footer class="footer">
+            <ul class="footer-links">
+                <li><a href="homePage.html">Home</a></li>
+                <li><a href="aboutUsPage.html">About Us</a></li>
+                <li><a href="locationPage.html">Find Bikes</a></li>
+                <li><a href="contactPage.html">Contact</a></li>
+            </ul>
+            <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBikes API</a></p>
+        </footer>
+        
+    </body>
 </html>

@@ -16,7 +16,7 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseURL, supabaseKey);
 
 app.get('/', (req, res) => {
-    res.sendFile('public/customers.html', { root: __dirname });
+    res.sendFile('public/homePage.html', { root: __dirname });
 });
 
 // Getting customers from the database
