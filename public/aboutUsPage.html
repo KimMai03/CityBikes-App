@@ -33,17 +33,13 @@
 
             <!-- ABOUT INTRO -->
             <section class="section">
-                <div class="two-col" style="align-items:start;">
-                    <div>
-                        <h2 class="section-title">What Is CityBikes?</h2>
-                        <p style="color:var(--text-muted); margin-bottom:14px;">CityBikes is a web application that aggregates real-time data from bike-sharing networks around the world using the open <strong>CityBik.es API</strong>. Whether you are a daily commuter, a tourist exploring a new city, or a researcher studying urban mobility, CityBikes gives you access to live station data from hundreds of networks across more than 50 countries.</p>
-                        <p style="color:var(--text-muted); margin-bottom:14px;">With CityBikes you can search for any city or country and immediately see a map of every bike station in that area, along with real-time availability &mdash; how many bikes are ready to rent and how many docks are free.</p>
-                        <p style="color:var(--text-muted);">No account required. No downloads. Just search, find, and ride.</p>
-                    </div>
-                    <div class="card" style="padding:24px;">
-                        <h3 style="margin-bottom:10px;">Open Data. Open Riding.</h3>
-                        <p>All data is sourced from the free, publicly available CityBik.es API &mdash; a community-maintained index of worldwide bike networks.</p>
-                    </div>
+                <div class="text-center mb-32">
+                    <h2 class="section-title">What Is CityBikes?</h2>
+                </div>
+                <div style="max-width:680px; margin:0 auto;">
+                    <p style="color:var(--text); margin-bottom:14px;">CityBikes is a web application that aggregates real-time data from bike-sharing networks around the world using the open <strong>CityBikes API</strong>. CityBikes gives users access to live station data from hundreds of networks across more than 50 countries.</p>
+                    <p style="color:var(--text); margin-bottom:14px;">With CityBikes you can search for any city or country and immediately see a map of every bike station in that area, along with real-time availability &mdash; how many bikes are ready to rent and how many docks are free.</p>
+                    <p style="color:var(--text);">No account required. No downloads.</p>
                 </div>
             </section>
 
@@ -53,12 +49,11 @@
             <section class="section">
                 <div class="text-center mb-32">
                     <h2 class="section-title">Our Goals</h2>
-                    <p class="section-sub">What we set out to achieve with this project.</p>
                 </div>
                 <div class="card-grid">
                     <div class="card">
                         <h3>Accessibility</h3>
-                        <p>Make bike-sharing information easy to find for everyone, regardless of city or country. No prior knowledge of local bike networks needed.</p>
+                        <p>Make bike-sharing information easy to find for everyone, regardless of city or country.</p>
                     </div>
                     <div class="card">
                         <h3>Global Reach</h3>
@@ -67,10 +62,6 @@
                     <div class="card">
                         <h3>Real-Time Accuracy</h3>
                         <p>Display live station data so users always know whether a station has bikes available or docks free before making a trip.</p>
-                    </div>
-                    <div class="card">
-                        <h3>Sustainable Cities</h3>
-                        <p>Encourage eco-friendly urban transport by making bike-sharing more visible and convenient to use.</p>
                     </div>
                 </div>
             </section>
@@ -89,7 +80,7 @@
                         <div class="step">
                             <div class="step-num">1</div>
                             <div class="step-body">
-                                <h4>Go to Location Search</h4>
+                                <h4>Search for Your Location</h4>
                                 <p>Click <strong>Find Bikes</strong> in the navigation bar or the <strong>Search Now</strong> button to open the Location Search page.</p>
                             </div>
                         </div>
@@ -97,7 +88,7 @@
                             <div class="step-num">2</div>
                             <div class="step-body">
                                 <h4>Enter a City or Country</h4>
-                                <p>Type the name of a city (e.g., Washington D.C.) or country (e.g., France) into the search bar and press Search.</p>
+                                <p>Type the name of a city (e.g., DC for Washington DC) or country (e.g., GR for Germany) into the search bar and press Search. (FYI: Only type two initials of city or country name.)</p>
                             </div>
                         </div>
                         <div class="step">
@@ -122,10 +113,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="alert alert-info mt-32">
-                        <strong>Tip:</strong> Station data refreshes each time you load the results page. Reload the page right before you head out for the most current availability.
-                    </div>
                 </div>
             </section>
 
@@ -134,8 +121,8 @@
             <!-- DATA SOURCE -->
             <section class="section">
                 <h2 class="section-title">Data Source</h2>
-                <p style="color:var(--text-muted); margin-bottom:14px;">CityBikes is powered by the <strong>CityBik.es API</strong>, an open-source project that aggregates data from city bike networks worldwide. Two endpoints are used:</p>
-                <ul style="color:var(--text-muted); padding-left:20px; display:flex; flex-direction:column; gap:10px; max-width:640px;">
+                <p style="color:var(--text); margin-bottom:14px;">CityBikes is powered by the <strong>CityBikes API</strong>, an open-source project that aggregates data from city bike networks worldwide. Two endpoints are used:</p>
+                <ul style="color:var(--text); padding-left:20px; display:flex; flex-direction:column; gap:10px; max-width:640px;">
                     <li><strong>Networks Endpoint</strong> &mdash; Returns all known bike networks including their name, city, country, latitude, and longitude.</li>
                     <li><strong>Station Endpoint</strong> &mdash; Uses a network's unique ID to fetch the live status of every station in that network, including available bikes and free docks.</li>
                 </ul>
@@ -151,7 +138,7 @@
                 <li><a href="locationPage.html">Find Bikes</a></li>
                 <li><a href="contactPage.html">Contact</a></li>
             </ul>
-            <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBikes API</a></p>
+            <p>Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBikes API</a></p>
         </footer>
 
     </body>

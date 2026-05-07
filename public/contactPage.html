@@ -1,7 +1,7 @@
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
         <title>CityBikes - Contact</title>
         <link rel="stylesheet" href="style.css" />
         <script src="contactPage.js" defer></script>
@@ -38,10 +38,10 @@
                 <div class="two-col" style="align-items:start; gap:40px;">
                     <div>
                         <h2 class="section-title">Contact Form</h2>
-                        <p class="section-sub">Fill out the fields below and submit your help request.</p>
+                        <p style="font-size:15px; color:var(--primary-dark); margin-bottom:10px;" id="messageCount"></p>
 
                         <div class="form-card">
-                            <form id="helpForm" action="confirmationPage.html" method="get" onsubmit="return validateForm()">
+                            <form id="helpForm">
 
                                 <div class="form-row">
                                     <div class="form-group">
@@ -85,7 +85,7 @@
                     <!-- FAQ -->
                     <div>
                         <h2 class="section-title">FAQs</h2>
-                        <p class="section-sub">Quick answers to frequent topics.</p>
+                        <br>
 
                         <div style="display:flex; flex-direction:column; gap:14px;">
 
@@ -103,12 +103,6 @@
                                 <h4 style="margin-bottom:5px; font-size:0.92rem;">What do the station colors on the map mean?</h4>
                                 <p style="font-size:0.87rem;"><span style="color:var(--accent); font-weight:700;">Green</span> = bikes available &nbsp; <span style="color:var(--warning); font-weight:700;">Amber</span> = limited (3 or fewer) &nbsp; <span style="color:var(--danger); font-weight:700;">Red</span> = no bikes.</p>
                             </div>
-
-                            <div class="card" style="padding:16px 18px;">
-                                <h4 style="margin-bottom:5px; font-size:0.92rem;">Is CityBikes affiliated with any bike-sharing company?</h4>
-                                <p style="font-size:0.87rem;">No. CityBikes is an independent academic project that reads publicly available data from the CityBikes open API. We do not operate any bike stations.</p>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -152,7 +146,7 @@
                 <li><a href="locationPage.html">Find Bikes</a></li>
                 <li><a href="contactPage.html">Contact</a></li>
             </ul>
-            <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBikes API</a></p>
+            <p>Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBikes API</a></p>
         </footer>
 
     </body>

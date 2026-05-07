@@ -15,7 +15,7 @@ async function loadStations() {
     if (!networkId) { showError(); return; }
 
     try {
-        const res = await fetch(`https://api.citybik.es/v2/networks/${networkId}`);
+        const res = await fetch(`/api/networks/${networkId}`);
         if (!res.ok) throw new Error('Bad response');
         const json = await res.json();
         allStations = json.network?.stations || [];
@@ -31,10 +31,10 @@ async function loadStations() {
     }
 }
 
- function showError() {
+function showError() {
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('errorState').style.display = 'block';
-}
+}   
 
 function renderSummary(stations) {
     const total = stations.length;
@@ -141,7 +141,7 @@ function renderStations(stations) {
         card.setAttribute('data-status', stationStatus(s));
         card.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
-                    h4>${s.name || 'Unnamed Station'}</h4>
+                    <h4>${s.name || 'Unnamed Station'}</h4>
                 ${badgeHTML(s)}
             </div>
             <div class="station-stats">

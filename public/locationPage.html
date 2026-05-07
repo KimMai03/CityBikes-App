@@ -91,6 +91,36 @@
             }
 
             @keyframes spin { to { transform: rotate(360deg); } }
+
+            .history-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.88rem;
+            }
+
+            .history-table th {
+                text-align: left;
+                padding: 8px 12px;
+                border-bottom: 2px solid var(--border);
+                font-weight: 600;
+                color: var(--text-muted);
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+
+            .history-table td {
+                padding: 10px 12px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .history-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .history-table tbody tr:hover td {
+                background: #F9FAFB;
+            }
         </style>
     </head>
     <body>
@@ -120,41 +150,32 @@
                     <p style="color:var(--text-muted); font-size:0.92rem; margin-bottom:18px;">Enter a city or country to search available bike-sharing networks worldwide.</p>
 
                     <div class="search-bar">
-                        <input type="text" id="searchInput" placeholder="e.g. Washington D.C., France, London..." />
+                        <input type="text" id="searchInput" placeholder="e.g. DC for Washington D.C. or GR for Germany, ..." />
                         <button id="searchBtn" onclick="searchNetworks()">Search</button>
                     </div>
                     <p id="searchStatus"></p>
                 </div>
             </div>
 
-            <!-- MAP + RESULTS -->
+            <!-- MAP -->
             <section class="section" style="padding-top:32px;">
-                <div class="two-col" style="gap:24px; align-items:start;">
-
-                    <!-- MAP -->
-                    <div>
-                        <h2 style="font-size:1rem; font-weight:700; margin-bottom:10px;">
-                            Network Map
-                            <span id="mapSubtitle" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"> &mdash; All worldwide networks</span>
-                        </h2>
-                        <div class="map-container">
-                            <div id="worldMap"></div>
-                        </div>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:6px;">Blue markers indicate bike networks. Click a marker for details.</p>
+                <div style="max-width:960px; margin:0 auto;">
+                    <h2 style="font-size:1rem; font-weight:700; margin-bottom:10px; text-align:center;">Network Map</h2>
+                    <div class="map-container">
+                        <div id="worldMap"></div>
                     </div>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:6px; text-align:center;">Blue markers indicate bike networks. Click a marker for details.</p>
+                </div>
+            </section>
 
-                    <!-- RESULTS LIST -->
-                    <div>
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                            <h2 style="font-size:1rem; font-weight:700;">Networks Found <span id="resultCount" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"></span></h2>
-                            <button id="clearBtn" onclick="clearSearch()" style="display:none; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.83rem; text-decoration:underline;">Clear</button>
-                        </div>
-
-                        <div id="resultsPanel" class="results-panel">
-                            <p style="color:var(--text-muted); font-size:0.9rem;">Search for a city or country above to see matching bike networks here.</p>
-                        </div>
-                    </div>
-
+            <!-- SEARCH HISTORY -->
+            <section class="section" style="padding-top:0;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                    <h2 style="font-size:22px; font-weight:700;">Search History</h2>
+                    <button onclick="clearHistory()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:12px; text-decoration:underline;">Clear History</button>
+                </div>
+                <div id="historyTableWrapper">
+                    <p style="color:var(--text-muted); font-size:18px;">No search history yet. Click on a network above to record it here.</p>
                 </div>
             </section>
 
@@ -168,7 +189,7 @@
                 <li><a href="locationPage.html">Find Bikes</a></li>
                 <li><a href="contactPage.html">Contact</a></li>
             </ul>
-            <p>&copy; 2026 <strong>CityBikes</strong> &mdash; Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBikes API</a></p>
+            <p>Powered by <a href="https://api.citybik.es/v2/" style="color:#9CA3AF;">CityBikes API</a></p>
         </footer>
         
     </body>

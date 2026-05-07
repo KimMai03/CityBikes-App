@@ -7,9 +7,11 @@ const map = L.map('worldMap').setView([20, 0], 2);
     let allNetworks = [];
     let markers = [];
 
+    const HISTORY_KEY = 'citybikes_search_history';
+
     async function loadAllNetworks() {
         try {
-            const res = await fetch('https://api.citybik.es/v2/networks');
+            const res = await fetch('/api/networks');
             const json = await res.json();
             allNetworks = json.networks || [];
             plotMarkers(allNetworks, false);
@@ -50,9 +52,6 @@ const map = L.map('worldMap').setView([20, 0], 2);
     function searchNetworks() {
         const query = document.getElementById('searchInput').value.trim().toLowerCase();
         const statusEl = document.getElementById('searchStatus');
-        const resultsEl = document.getElementById('resultsPanel');
-        const countEl = document.getElementById('resultCount');
-        const clearBtn = document.getElementById('clearBtn');
         const mapSubtitle = document.getElementById('mapSubtitle');
 
         if (!query) {
@@ -62,7 +61,7 @@ const map = L.map('worldMap').setView([20, 0], 2);
 
         statusEl.innerHTML = '<span class="spinner"></span>Searching...';
 
-            const filtered = allNetworks.filter(n => {
+        const filtered = allNetworks.filter(n => {
             const city = (n.location?.city || '').toLowerCase();
             const country = (n.location?.country || '').toLowerCase();
             const name = (n.name || '').toLowerCase();
@@ -71,62 +70,89 @@ const map = L.map('worldMap').setView([20, 0], 2);
 
         if (filtered.length === 0) {
             statusEl.textContent = `No networks found for "${query}". Try a different city or country.`;
-            resultsEl.innerHTML = `<p style="color:var(--text-muted); font-size:0.9rem;">No results. Try searching a broader term like a country name.</p>`;
-            countEl.textContent = '';
-            clearBtn.style.display = 'inline';
             return;
         }
 
-        statusEl.textContent = '';
-        countEl.textContent = `(${filtered.length} found)`;
+        statusEl.textContent = `${filtered.length} network(s) found for "${query}".`;
         mapSubtitle.textContent = ` — Results for "${query}"`;
-        clearBtn.style.display = 'inline';
 
         plotMarkers(filtered, true);
-        renderResultsList(filtered);
-    }
-
-    function renderResultsList(networks) {
-        const resultsEl = document.getElementById('resultsPanel');
-        resultsEl.innerHTML = '';
-
-        const list = document.createElement('div');
-        list.className = 'network-list';
-
-        networks.forEach(n => {
-            const city = n.location?.city || 'Unknown City';
-            const country = n.location?.country || '??';
-            const company = (n.company || []).join(', ') || 'Unknown Operator';
-
-            const item = document.createElement('a');
-            item.className = 'network-item';
-            item.href = `resultPage.html?networkId=${n.id}&networkName=${encodeURIComponent(n.name)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`;
-            item.innerHTML = `
-                <div class="network-item-left">
-                    <h4>${n.name}</h4>
-                    <p>${city}, ${country} &bull; ${company}</p>
-                </div>
-                <span class="network-item-arrow">&#8594;</span>
-            `;
-            list.appendChild(item);
-        });
-
-        resultsEl.appendChild(list);
     }
 
     function clearSearch() {
         document.getElementById('searchInput').value = '';
         document.getElementById('searchStatus').textContent = '';
-        document.getElementById('resultCount').textContent = '';
         document.getElementById('mapSubtitle').textContent = ' — All worldwide networks';
-        document.getElementById('clearBtn').style.display = 'none';
-        document.getElementById('resultsPanel').innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Search for a city or country above to see matching bike networks here.</p>';
         plotMarkers(allNetworks, false);
         map.setView([20, 0], 2);
+    }
+
+    // --- Search History ---
+
+    function getHistory() {
+        try {
+            return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+        } catch {
+            return [];
+        }
+    }
+
+    function saveToHistory(name, city, country) {
+        const history = getHistory();
+        history.unshift({
+            name,
+            location: [city, country].filter(Boolean).join(', '),
+            viewedAt: new Date().toISOString()
+        });
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20)));
+        renderHistoryTable();
+    }
+
+    function renderHistoryTable() {
+        const wrapper = document.getElementById('historyTableWrapper');
+        const history = getHistory();
+
+        if (history.length === 0) {
+            wrapper.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">No search history yet. Click on a network above to record it here.</p>';
+            return;
+        }
+
+        const table = document.createElement('table');
+        table.className = 'history-table';
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Network Name</th>
+                    <th>Location</th>
+                    <th>Viewed At</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${history.map((entry, i) => `
+                    <tr>
+                        <td style="color:var(--text-muted);">${i + 1}</td>
+                        <td style="font-weight:600;">${entry.name}</td>
+                        <td>${entry.location}</td>
+                        <td style="color:var(--text-muted);">${new Date(entry.viewedAt).toLocaleString()}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+        wrapper.innerHTML = '';
+        wrapper.appendChild(table);
+    }
+
+    function clearHistory() {
+        localStorage.removeItem(HISTORY_KEY);
+        renderHistoryTable();
     }
 
     document.getElementById('searchInput').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') searchNetworks();
     });
 
-window.onload = loadAllNetworks();
+window.onload = function() {
+    loadAllNetworks();
+    renderHistoryTable();
+};
