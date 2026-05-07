@@ -6,4 +6,4 @@ specific station, station location, station general information, etc.
 
 Description of target browsers: This app will target Androi users
 
-Link to Developer Manual: 
+Link to Developer Manual: located inside docs folder, named developer_manual.md
