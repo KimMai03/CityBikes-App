@@ -52,7 +52,6 @@ const map = L.map('worldMap').setView([20, 0], 2);
     function searchNetworks() {
         const query = document.getElementById('searchInput').value.trim().toLowerCase();
         const statusEl = document.getElementById('searchStatus');
-        const mapSubtitle = document.getElementById('mapSubtitle');
 
         if (!query) {
             statusEl.textContent = 'Please enter a city or country to search.';
@@ -74,7 +73,6 @@ const map = L.map('worldMap').setView([20, 0], 2);
         }
 
         statusEl.textContent = `${filtered.length} network(s) found for "${query}".`;
-        document.getElementById('mapSubtitle').textContent = `— Results for "${query}"`;
 
         plotMarkers(filtered, true);
         renderNetworkList(filtered);
@@ -113,7 +111,6 @@ const map = L.map('worldMap').setView([20, 0], 2);
     function clearSearch() {
         document.getElementById('searchInput').value = '';
         document.getElementById('searchStatus').textContent = '';
-        document.getElementById('mapSubtitle').textContent = '';
         renderNetworkList([]);
         plotMarkers(allNetworks, false);
         map.setView([20, 0], 2);

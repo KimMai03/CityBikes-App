@@ -7,121 +7,6 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="locationPage.js" defer></script>
-        <style>
-            #worldMap { height: 460px; }
-
-            .network-list {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                margin-top: 12px;
-            }
-
-            .network-item {
-                background: var(--white);
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                padding: 12px 16px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 12px;
-                cursor: pointer;
-                transition: border-color 0.15s;
-                text-decoration: none;
-                color: inherit;
-            }
-
-            .network-item:hover {
-                border-color: var(--primary);
-                text-decoration: none;
-            }
-
-            .network-item-left h4 {
-                font-size: 0.92rem;
-                font-weight: 600;
-                margin-bottom: 2px;
-            }
-
-            .network-item-left p {
-                font-size: 0.83rem;
-                color: var(--text-muted);
-            }
-
-            .network-item-arrow {
-                color: var(--primary);
-                font-size: 1rem;
-                flex-shrink: 0;
-            }
-
-            .search-section {
-                background: var(--white);
-                border-bottom: 1px solid var(--border);
-                padding: 28px 24px;
-            }
-
-            .search-section-inner {
-                max-width: 720px;
-                margin: 0 auto;
-                text-align: center;
-            }
-
-            #searchStatus {
-                font-size: 0.88rem;
-                color: var(--text-muted);
-                margin-top: 10px;
-                min-height: 18px;
-            }
-
-            .results-panel {
-                max-height: 400px;
-                overflow-y: auto;
-            }
-
-            .spinner {
-                display: inline-block;
-                width: 16px;
-                height: 16px;
-                border: 2px solid var(--border);
-                border-top-color: var(--primary);
-                border-radius: 50%;
-                animation: spin 0.7s linear infinite;
-                vertical-align: middle;
-                margin-right: 5px;
-            }
-
-            @keyframes spin { to { transform: rotate(360deg); } }
-
-            .history-table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 0.88rem;
-            }
-
-            .history-table th {
-                text-align: left;
-                padding: 8px 12px;
-                border-bottom: 2px solid var(--border);
-                font-weight: 600;
-                color: var(--text-muted);
-                font-size: 0.8rem;
-                text-transform: uppercase;
-                letter-spacing: 0.04em;
-            }
-
-            .history-table td {
-                padding: 10px 12px;
-                border-bottom: 1px solid var(--border);
-            }
-
-            .history-table tr:last-child td {
-                border-bottom: none;
-            }
-
-            .history-table tbody tr:hover td {
-                background: #F9FAFB;
-            }
-        </style>
     </head>
     <body>
 
@@ -146,8 +31,8 @@
             <!-- SEARCH BAR -->
             <div class="search-section">
                 <div class="search-section-inner">
-                    <h1 style="font-size:1.5rem; font-weight:700; margin-bottom:6px;">Find Bike Networks</h1>
-                    <p style="color:var(--text-muted); font-size:0.92rem; margin-bottom:18px;">Enter a city or country to search available bike-sharing networks worldwide.</p>
+                    <h1 style="font-size:24px; font-weight:700; margin-bottom:6px;">Find Bike Networks</h1>
+                    <p style="color:var(--text-muted); font-size:15px; margin-bottom:18px;">Enter a city or country to search available bike-sharing networks worldwide.</p>
 
                     <div class="search-bar">
                         <input type="text" id="searchInput" placeholder="e.g. DC for Washington D.C. or GR for Germany, ..." />
@@ -160,7 +45,7 @@
             <!-- SEARCH RESULTS LIST -->
             <section class="section" id="resultsSection" style="display:none; padding-top:20px; padding-bottom:0;">
                 <div style="max-width:960px; margin:0 auto;">
-                    <h2 style="font-size:1rem; font-weight:700; margin-bottom:10px;">Matching Networks</h2>
+                    <h2 style="font-size:16px; font-weight:700; margin-bottom:10px;">Matching Networks</h2>
                     <div id="networkResultsList" class="network-list results-panel"></div>
                 </div>
             </section>
@@ -168,11 +53,11 @@
             <!-- MAP -->
             <section class="section" style="padding-top:32px;">
                 <div style="max-width:960px; margin:0 auto;">
-                    <h2 style="font-size:1rem; font-weight:700; margin-bottom:10px; text-align:center;">Network Map <span id="mapSubtitle" style="font-weight:400; color:var(--text-muted); font-size:0.88rem;"></span></h2>
+                    <h2 style="font-size:16px; font-weight:700; margin-bottom:10px; text-align:center;">Network Map</h2>
                     <div class="map-container">
                         <div id="worldMap"></div>
                     </div>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:6px; text-align:center;">Blue markers indicate bike networks. Click a marker for details.</p>
+                    <p style="font-size:18px; color:var(--text-muted); margin-top:6px; text-align:center;">Blue markers indicate bike networks. Click a marker for details.</p>
                 </div>
             </section>
 
