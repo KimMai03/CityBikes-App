@@ -74,20 +74,50 @@ const map = L.map('worldMap').setView([20, 0], 2);
         }
 
         statusEl.textContent = `${filtered.length} network(s) found for "${query}".`;
-        mapSubtitle.textContent = ` — Results for "${query}"`;
+        document.getElementById('mapSubtitle').textContent = `— Results for "${query}"`;
 
         plotMarkers(filtered, true);
+        renderNetworkList(filtered);
+    }
+
+    function renderNetworkList(networks) {
+        const section = document.getElementById('resultsSection');
+        const list = document.getElementById('networkResultsList');
+
+        if (networks.length === 0) {
+            section.style.display = 'none';
+            list.innerHTML = '';
+            return;
+        }
+
+        section.style.display = 'block';
+        list.innerHTML = '';
+        networks.forEach(n => {
+            const city    = n.location?.city    || '';
+            const country = n.location?.country || '';
+            const href    = `resultPage.html?networkId=${n.id}&networkName=${encodeURIComponent(n.name)}&city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`;
+            const a = document.createElement('a');
+            a.className = 'network-item';
+            a.href = href;
+            a.innerHTML = `
+                <div class="network-item-left">
+                    <h4>${n.name}</h4>
+                    <p>${[city, country].filter(Boolean).join(', ')}</p>
+                </div>
+                <span class="network-item-arrow">&#8594;</span>`;
+            a.addEventListener('click', () => saveToHistory(n.name, city, country));
+            list.appendChild(a);
+        });
     }
 
     function clearSearch() {
         document.getElementById('searchInput').value = '';
         document.getElementById('searchStatus').textContent = '';
-        document.getElementById('mapSubtitle').textContent = ' — All worldwide networks';
+        document.getElementById('mapSubtitle').textContent = '';
+        renderNetworkList([]);
         plotMarkers(allNetworks, false);
         map.setView([20, 0], 2);
     }
-
-    // --- Search History ---
 
     function getHistory() {
         try {
