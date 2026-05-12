@@ -67,10 +67,10 @@ The server listens on **http://localhost:3000** by default
 
 ### Access the app in a browser
 
-Home -> http://localhost:3000 
-Find Bikes (Location) -> http://localhost:3000/locationPage.html
-About Us -> http://localhost:3000/aboutUsPage.html
-Contact -> http://localhost:3000/contactPage.html
+1. Home -> http://localhost:3000 
+2. Find Bikes (Location) -> http://localhost:3000/locationPage.html
+3. About Us -> http://localhost:3000/aboutUsPage.html
+4. Contact -> http://localhost:3000/contactPage.html
 
 ## Testing - Manual Testing
 
