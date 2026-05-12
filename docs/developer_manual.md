@@ -9,7 +9,6 @@ git clone https://github.com/KimMai03/CityBikes-App.git
 ```
 
 ### Install dependencies
-
 ```bash
 npm install
 ```
@@ -23,7 +22,6 @@ This installs all packages listed in `package.json`, including:
 6. `usa-state-validator`
 
 ### Create the .env file
-
 Create a file named .env in the project root:
 
 ```
@@ -32,14 +30,12 @@ SUPABASE_KEY=""
 ```
 
 ### Supabase credentials
-
 1. Log in at (https://supabase.com) and open your project.
 2. Go to Project Settings -> API
 3. Copy the Project URL -> `SUPABASE_URL`
 4. Copy the public key -> `SUPABASE_KEY`
 
 ### Set up the Supabase contacts table
-
 The contact form endpoint writes to a table called `contacts`. Run the following SQL in the Supabase SQL editor to create it:
 
 ```sql
@@ -66,14 +62,12 @@ Run `nodemon -e '*'` to let files automatically restarts the server on any chang
 The server listens on **http://localhost:3000** by default
 
 ### Access the app in a browser
-
 1. Home -> http://localhost:3000 
 2. Find Bikes (Location) -> http://localhost:3000/locationPage.html
 3. About Us -> http://localhost:3000/aboutUsPage.html
 4. Contact -> http://localhost:3000/contactPage.html
 
 ## Testing - Manual Testing
-
 1. Navigation Bar, including Home, About Us, Find Bikes, Contact and Search Now, navigate to the correct page
 2. Footer links navigate correctly
 3. Search Location and Start Searching buttons navigate to locationPage.html or Find Bikes page
@@ -88,9 +82,18 @@ country name (e.g., `GR` for Germany) filters markers and shows a result list
 
 
 ## API for server application
-
+1. GET/ : Serves the home page (response: homePage.html)
+2. POST/contactPage : Saves a form submission from users to the Supabase contacts table
+3. GET/api/contacts : Returns all contact submissions from the Supabase contacts table
+4. GET/api/networks : Proxies the list of bike networks from the CityBikes API
+5. GET/api/networks/:networkId : Proxies live station data for a specific bike network from the CityBikes API
 
 ## Known Bugs
-
+- Any users can read all form submissions without authentication, since there is no account required to submit help request form
+- Map size can be differ on mobile and browser -> May cause overflow on small screen
+- Contact form does not validate data input
 
 ## Future Development
+- Fix map responsiveness
+- Validate form input before submission
+- Allow users to create account, save locations of bike networks, and manage help request submission
